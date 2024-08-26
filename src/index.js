@@ -8,7 +8,15 @@ import express from "express";
 const app=express()
 
 
-connectionDB();
+connectionDB()
+.then(()=>{
+    app.listen(process.env.PORT||8000,()=>{
+        console.log("server is running ");
+    })
+})
+.catch((err)=>{
+    console.log("error occured",err);
+})
 
 
 
