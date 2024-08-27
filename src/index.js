@@ -1,11 +1,8 @@
 import dotenv from 'dotenv'
 import connectionDB from './DB/index.js';
+import {app} from './app.js'
 
-dotenv.config({path:'./env'});
-
-import express from "express";
-
-const app=express()
+dotenv.config({path:'./.env'});
 
 
 connectionDB()
@@ -17,7 +14,6 @@ connectionDB()
 .catch((err)=>{
     console.log("error occured",err);
 })
-
 
 
 
