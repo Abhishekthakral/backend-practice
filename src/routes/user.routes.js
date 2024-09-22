@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loggedOutUser, loginUser, registerUser } from "../controllers/user.controllers.js";
+import { loggedOutUser, loginUser, registerUser ,refreshAccesstoken} from "../controllers/user.controllers.js";
 import {upload} from "../middlewares/multer.middlewares.js"
 import {verifyjwt} from "../middlewares/auth.middleware.js"
 
@@ -19,7 +19,8 @@ userrouter.route('/register').post(
     registerUser);
 userrouter.route('/login').post(loginUser)
 
-
 userrouter.route("/logout").post(verifyjwt,loggedOutUser)
+
+userrouter.route("/refresh-token").post(refreshAccesstoken);
 
 export default userrouter
