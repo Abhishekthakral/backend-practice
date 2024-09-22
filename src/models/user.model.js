@@ -66,7 +66,7 @@ userSchema.methods.genrateAccessToken=async function() {
             username:this.userName,
             fullName:this.fullName
         },
-        process.env.ACCESS_TOKEN-SECRET,
+        process.env.ACCESS_TOKEN_SECRET,
         {
             expiresIn:process.env.ACCESS_TOKEN_EXPIRY
         }
