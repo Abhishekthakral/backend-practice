@@ -43,7 +43,7 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
-    refereshToken:{
+    refereshToken :{
         type:String,
     }
 },{timestamps:true});
