@@ -388,4 +388,71 @@ const updateUserCoverImage=asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200,user,"cover image updated successfully"))
 })
 
-export {registerUser,loginUser,loggedOutUser,refreshAccesstoken,getCurrentUser,changeCurrentPassword,updateAcceountDetail,updateUserAvtar,updateUserCoverImage};
+const getUserChannelProfile=asyncHandler(async(req,res)=>{
+    const {username}=req.params;
+    if(username?.trim()){
+        throw new ApiError(400,"username is required")
+    }
+
+    const channel =await User.aggregate([
+        {
+            $match:{
+                userName:username.toLowerCase()
+            }
+        },
+        {
+            $lookup:{
+                from:"Subcription",
+                localField:"_id",
+                foreignField:"channel",
+                as:"subscribers"
+            }
+        },
+        {
+            $lookup:{
+                from:"Subcription",
+                localField:"_id",
+                foreignField:"subscriber",
+                as:"subscribeto"
+            }
+        },
+        {
+            $addFields:{
+                subscribersCount:{
+                    $size:"$subscribers"
+                },
+                channelsSubscribedtoCount:{
+                    $size:"$subscribeto"
+                },
+                isSubscribed:{
+                    $cond:{
+                        if:{$in:[req.user?._id,"$subscribers.subscriber"]},
+                        then:true,
+                        else:false
+                    }
+                }
+            }
+        },
+        {
+            $project:{
+                fullName:1,
+                userName:1,
+                subscribersCount:1,
+                channelsSubscribedtoCount:1,
+                isSubscribed:1,
+                avtar:1,
+                coverImage:1,
+                email:1
+            }
+        }
+    ])
+
+    if(!channel?.length){
+        throw new ApiError(404,"channel does not exist")
+    }
+
+    res.status(200)
+    .json(new ApiResponse(200,"user channeled fetched successfully"))
+})
+
+export {registerUser,loginUser,loggedOutUser,refreshAccesstoken,getCurrentUser,changeCurrentPassword,updateAcceountDetail,updateUserAvtar,updateUserCoverImage,getUserChannelProfile};
